@@ -1,0 +1,8 @@
+# IDE's
+.idea/
+.zed/
+
+# Compiled Files
+*.dylib
+*.dll
+*.so
