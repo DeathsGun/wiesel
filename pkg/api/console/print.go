@@ -66,3 +66,15 @@ func WarningComponentf(c *ishell.Context, component, format string, args ...any)
 	c.Printf("%s\t: ", component)
 	c.Printf(format, args...)
 }
+
+func StatusComponent(p Printer, component, status string) {
+	p.Print(color.New(color.FgBlue).Add(color.Bold).Sprint("[*] "))
+	p.Printf("%s\t: ", component)
+	p.Println(status)
+}
+
+func StatusComponentf(p Printer, component, format string, args ...any) {
+	p.Print(color.New(color.FgBlue).Add(color.Bold).Sprint("[*] "))
+	p.Printf("%s\t: ", component)
+	p.Printf(format, args...)
+}
