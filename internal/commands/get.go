@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"github.com/abiosoft/ishell/v2"
 	"github.com/deathsgun/wiesel/internal/loader"
 )
@@ -57,7 +58,7 @@ func getFunc(c *ishell.Context) {
 	for _, arg := range c.Args {
 		for _, o := range options {
 			if o.Name == arg {
-				c.Println(o.Name, "=>", o.Value())
+				c.Println(o.Name, "=>", fmt.Sprintf("%#v", o.Value()))
 			}
 		}
 	}

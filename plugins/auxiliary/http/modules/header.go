@@ -1,7 +1,6 @@
-package main
+package modules
 
 import (
-	"crypto/tls"
 	"github.com/abiosoft/ishell/v2"
 	"github.com/deathsgun/wiesel/pkg/api/console"
 	"github.com/deathsgun/wiesel/pkg/api/httpx"
@@ -11,7 +10,6 @@ import (
 	"net/netip"
 	"net/url"
 	"sync"
-	"time"
 )
 
 var GetHeader = &getHeader{
@@ -52,21 +50,6 @@ func (h *getHeader) Run(c *ishell.Context) error {
 	return nil
 }
 
-var secureHttpClient = &http.Client{
-	Transport: &http.Transport{
-		TLSHandshakeTimeout:   time.Second,
-		ResponseHeaderTimeout: time.Second * 5,
-	},
-}
-var insecureHttpClient = &http.Client{
-	Transport: &http.Transport{
-
-		TLSHandshakeTimeout:   time.Millisecond * 500,
-		ResponseHeaderTimeout: time.Second * 3,
-		TLSClientConfig:       &tls.Config{InsecureSkipVerify: true},
-	},
-}
-
 func (h *getHeader) getHeaders(wg *sync.WaitGroup, c *ishell.Context, host netip.AddrPort) {
 	defer wg.Done()
 
@@ -86,9 +69,9 @@ func (h *getHeader) getHeaders(wg *sync.WaitGroup, c *ishell.Context, host netip
 	}
 	var resp *http.Response
 	if h.Ssl {
-		resp, err = insecureHttpClient.Do(req)
+		resp, err = httpx.SecureClient.Do(req)
 	} else {
-		resp, err = secureHttpClient.Do(req)
+		resp, err = httpx.InsecureClient.Do(req)
 	}
 	if err != nil {
 		// We don't care about the error here
@@ -108,5 +91,9 @@ outer:
 		console.InfoComponentf(c, host.String(), "%s: %s\n", key, value)
 		count++
 	}
-	console.InfoComponentf(c, host.String(), "detected %d headers\n", count)
+	if count == 0 {
+		console.WarningComponent(c, host.String(), "all detected headers are defined in IGN_HEADER and were ignored")
+	} else {
+		console.InfoComponentf(c, host.String(), "detected %d headers\n", count)
+	}
 }

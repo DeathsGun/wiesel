@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"github.com/abiosoft/ishell/v2"
 	"github.com/deathsgun/wiesel/internal/loader"
 	"github.com/deathsgun/wiesel/pkg/api/console"
@@ -50,8 +51,9 @@ func setFunc(c *ishell.Context) {
 			continue
 		}
 		o.SetValue(value)
-		c.Println("Set", option, "=>", value)
+		c.Println("Set", option, "=>", fmt.Sprintf("%#v", o.Value()))
 		return
 	}
 
+	console.Errorf(c, "Unknown option '%s'", option)
 }

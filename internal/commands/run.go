@@ -28,6 +28,10 @@ func runFunc(c *ishell.Context) {
 
 	options := loader.Options[loader.CurrentModule]
 	for _, option := range options {
+		if !option.IsValid() {
+			console.Errorln(c, "One or more options failed to validate: "+option.Name)
+			return
+		}
 		option.SetRawValue(option.Value())
 	}
 

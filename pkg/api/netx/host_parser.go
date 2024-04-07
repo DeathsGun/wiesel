@@ -15,6 +15,13 @@ func (h *HostList) GoString() string {
 	return h.shortList
 }
 
+func (h *HostList) UnmarshalText(text []byte) error {
+	hostList := ParseHosts(string(text))
+	h.Hosts = hostList.Hosts
+	h.shortList = hostList.shortList
+	return nil
+}
+
 func ParseHosts(input string) *HostList {
 	if input == "" {
 		return &HostList{Hosts: make([]netip.Addr, 0)}
